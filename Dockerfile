@@ -8,8 +8,10 @@ ADD . /go/src/github.com/sroze/kubernetes-load-balancer-proxifier/
 
 WORKDIR /go/src/github.com/sroze/kubernetes-load-balancer-proxifier
 
-RUN cat versions | go-pin reset
-RUN go get
-RUN go build -o main .
+RUN cat versions | go-pin reset \
+    && go get \
+    && go build -o main . \
+    && mv /go/bin/kubernetes-load-balancer-proxifier /kubernetes-load-balancer-proxifier \
+    && rm -rf /go
 
-CMD ["/app/main"]
+CMD ["/kubernetes-load-balancer-proxifier"]

@@ -16,7 +16,7 @@ your cluster nodes. The easiest way is to simply run the following command:
 
 ```
 docker run -d -t \
-    -e CONFD_ETCD_NODE=[YOUR-ETCD-IP]:4001 \
+    -e CONFD_ETCD_NODE=[YOUR-ETCD-IP]:2379 \
     -p 80:80 \
     --restart=always \
     --name=reverse-proxy \
