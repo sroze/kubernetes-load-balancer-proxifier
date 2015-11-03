@@ -75,14 +75,17 @@ func ReviewService(client *client.Client, service *api.Service, rootDns string) 
     // Get existing proxy configuration
     var proxyConfiguration reverseproxy.Configuration
     if jsonConfiguration, found := service.ObjectMeta.Annotations["kubernetesReverseproxy"]; found {
-        proxyConfiguration := reverseproxy.Configuration{}
+        proxyConfiguration = reverseproxy.Configuration{}
 
         if err := json.Unmarshal([]byte(jsonConfiguration), &proxyConfiguration); err != nil {
             log.Println("Unable to unmarshal the configuration, keep the empty one")
         }
+
     } else {
+        log.Println("No `kubernetesReverseproxy` annotation found")
         proxyConfiguration = reverseproxy.Configuration{}
     }
+
 
     // If configuration found, skip it
     if len(proxyConfiguration.Hosts) == 0 {
@@ -113,7 +116,7 @@ func ReviewService(client *client.Client, service *api.Service, rootDns string) 
         service.ObjectMeta.Annotations["kubernetesReverseproxy"] = string(jsonConfiguration)
 
         // Update the service
-        log.Println("Adding the `kubernetesReverseproxy` annotation to service and the loadbalancer status")
+        log.Println("Adding the `kubernetesReverseproxy` annotation to service")
         updated, err := client.Services(service.ObjectMeta.Namespace).Update(service)
         if err != nil {
             log.Println("Error while updated the service:", err)
